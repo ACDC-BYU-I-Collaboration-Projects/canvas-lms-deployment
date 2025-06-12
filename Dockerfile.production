@@ -9,22 +9,22 @@ LABEL maintainer="Instructure"
 
 ARG RUBY
 ARG POSTGRES_CLIENT=14
-ENV APP_HOME /usr/src/app/
-ENV RAILS_ENV production
-ENV SASS_STYLE compressed
-env RAILS_LOAD_ALL_LOCALES=1
-ENV NGINX_MAX_UPLOAD_SIZE 10g
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
-ENV LC_CTYPE en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
+ENV APP_HOME=/usr/src/app/
+ENV RAILS_ENV=production
+ENV SASS_STYLE=compressed
+ENV RAILS_LOAD_ALL_LOCALES=1
+ENV NGINX_MAX_UPLOAD_SIZE=10g
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
+ENV LC_CTYPE=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 ARG CANVAS_RAILS=7.2
 ENV CANVAS_RAILS=${CANVAS_RAILS}
 
-ENV NODE_MAJOR 20
-ENV GEM_HOME /home/docker/.gem/$RUBY
-ENV PATH ${APP_HOME}bin:$GEM_HOME/bin:$PATH
-ENV BUNDLE_APP_CONFIG /home/docker/.bundle
+ENV NODE_MAJOR=20
+ENV GEM_HOME=/home/docker/.gem/$RUBY
+ENV PATH=${APP_HOME}bin:$GEM_HOME/bin:$PATH
+ENV BUNDLE_APP_CONFIG=/home/docker/.bundle
 
 WORKDIR $APP_HOME
 
@@ -73,5 +73,4 @@ RUN unset RUBY && bundle config --global build.nokogiri --use-system-libraries &
   bundle config --global build.ffi --enable-system-libffi && \
   bundle install
 RUN yarn install --frozen-lockfile || yarn install --frozen-lockfile --network-concurrency 1 && \
-  bin/rails canvas:compile_assets --trace && \
-  rm -rf node_modules
+bin/rails canvas:compile_assets --trace
