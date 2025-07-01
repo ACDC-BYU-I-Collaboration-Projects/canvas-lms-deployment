@@ -90,3 +90,5 @@ RUN set -eux; \
     /home/docker/.bundle/ \
     /home/docker/.cache/yarn \
     /home/docker/.gem/
+
+# RUN -d -p 9000:9000 --name minio-azure-gateway -e MINIO_ACCESS_KEY=YOUR_ACCESS_KEY -e MINIO_SECRET_KEY=YOUR_SECRET_KEY minio-azure-gateway

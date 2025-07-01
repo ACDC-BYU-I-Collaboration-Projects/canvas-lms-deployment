@@ -8,6 +8,41 @@ services:
       - redis
     environment:
       POSTGRES_PASSWORD: sekret
+  minio:
+    # Use the latest MinIO image
+    image: quay.io/minio/minio:latest
+    # Start MinIO server and console
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000" # S3 API endpoint
+      - "9001:9001" # MinIO Console
+    environment:
+      - MINIO_ROOT_USER="minioadmin" # default [CHANGE]
+      - MINIO_ROOT_PASSWORD="minioadmidpw" # default [CHANGE]
+    volumes:
+      -minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  minio-client:
+    image: quay.io/minio/mc:latest
+    entrypoint: /bin/sh
+    command: -c "while true; do echo 'MinIO client running...'; sleep 3600; done"
+    environment:
+      - MC_HOST_minio=http://minioadmin:minioadmidpw@minio:9000/
+    depends_on:
+      - minio
+  storage:
+    s3:
+      endpoint: http://minio:9000
+      access_key_id: minioadmin
+      secret_access_key: minioadmidpw
+      bucket: canvas-bucket
+      region: us-east-1
+      force_path_style: true
 
   jobs:
     <<: *WEB
